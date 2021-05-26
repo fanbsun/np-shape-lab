@@ -114,8 +114,8 @@ int main(int argc, const char *argv[]) {
              "Radius of the initial sphere & simulation unit of length (in nanometers).")
             ("netCharge,q", value<double>(&q_strength)->default_value(600),
              "Net NP charge, if fully occupied (elementary charges).")
-            ("ChargeDensity,A", value<double>(&sigma)->default_value(0.12),
-             "NP charge Density, Default to be 0.12.")
+            ("ChargeDensity,A", value<double>(&sigma)->default_value(0.1),
+             "NP charge Density, Default to be 0.1")
             ("saltConc,c", value<double>(&conc_out)->default_value(0.005),
              "Salt concentration (Molar).")
             ("tensSigma,t", value<double>(&boundary.sigma_a)->default_value(1),
@@ -128,11 +128,11 @@ int main(int argc, const char *argv[]) {
              "Reduced stretching modulus of the particle (kB*T/R0^2).")
             ("GeomConstraint,G", value<char>(&geomConstraint)->default_value('N'),
              "Specification of rigid geometric constraints, 'V' for volume.")
-            ("functionFlag,H", value<char>(&functionFlag)->default_value('n'),
-             "specification of function, 'y' for yinyang function.")
             ("bucklingFlag,B", value<char>(&bucklingFlag)->default_value('n'),
              "Specification of stretching form, if spontaneous buckling should occur.")
                  // Physical Parameters for patterned (Janus, Striped, Polyhedral) particles:
+            ("functionFlag,H", value<char>(&functionFlag)->default_value('n'),
+             "specification of function, 'y' for yinyang function.")
             ("numPatches,N", value<int>(&numPatches)->default_value(1),
              "The number of distinct charge patches (of tunable size if N = 2).")
             ("fracChargePatch,p", value<double>(&fracChargedPatch)->default_value(0.5),
@@ -146,7 +146,7 @@ int main(int argc, const char *argv[]) {
              "NP packing fraction determining total box size.")
             ("counterionValency,Z", value<int>(&counterion_valency)->default_value(1),
              "Valency of the counterions.")
-                // Virtual Parameters:
+                // Computing Parameters:
             ("totalTime,S", value<int>(&mdremote.steps)->default_value(250000),
              "Duration of the simulation (total timesteps).")
             ("timestep,d", value<double>(&mdremote.timestep)->default_value(0.001),
@@ -172,9 +172,9 @@ int main(int argc, const char *argv[]) {
              "Fold reduction to temperature at initial annealing call.  Was 10 before (and constant throughout)")
                  // Runtime & Output Parameters:
             ("randomFlag,F", value<char>(&randomFlag)->default_value('y'),
-             "If predefined shape used or not ('y' for yes).")
+             "If you want to distribute area randomly on the surface to avoid artifcats due to defects.")
             ("offFlag,o", value<char>(&offFlag)->default_value('n'),
-             "If predefined shape used or not ('y' for yes).")
+             "If you want to start from a different shape in the off file than sphere in infiles ('y' for yes).")
             ("moviestart,m", value<int>(&mdremote.moviestart)->default_value(1),
              "The starting point of the movie")
             ("offfreq,O", value<int>(&mdremote.offfreq)->default_value(2500),
