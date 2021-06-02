@@ -488,8 +488,12 @@ int main(int argc, const char *argv[]) {
     double counterion_flag = true;
 
     boundary.assign_dual_initial();
-    boundary.reassign_pm_charges();
-    //boundary.reassign_charges();
+    if (chargeFlag == 'p'){
+        boundary.reassign_charges();
+    }
+    else {
+        boundary.reassign_pm_charges();
+    }
     cout << "Finish assigning duals and recomputing all the charges" << endl;
 
     //boundary.put_counterions(q_strength, unit_radius_sphere, counterion_diameter, box_halflength_new, counterions, counterion_valency, counterion_flag);

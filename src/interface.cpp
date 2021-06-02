@@ -906,12 +906,12 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
         if (num_divisions == 1) {                    // If only one patch: homogeneous charge pattern
             unsigned int i;
             for (i = 0; i < number_of_vertices; i++)
-                V[permutations[i].second].q = sigma * randomAreaList[i];
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
         }
         if (num_divisions == 2) {                //  two patch Janus, specifiable fractional coverage
             unsigned int i;
             for (i = 0; i < nVertPerPatch; i++)
-                V[permutations[i].second].q = sigma * randomAreaList[i];
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             for (; i < number_of_vertices; i++)
                 V[permutations[i].second].q = 0;
         }
@@ -922,11 +922,11 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
     if (chargeFlag == 'p' && functionFlag == 'C') {           // Caps with positive charges only.
         unsigned int i;
         for (i = 0; i < nVertPerPatch; i++)
-            V[permutations[i].second].q = sigma * randomAreaList[i];
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
         for (; i < (number_of_vertices - nVertPerPatch); i++)
             V[permutations[i].second].q = 0;
         for (; i < number_of_vertices; i++)
-            V[permutations[i].second].q = sigma * randomAreaList[i];
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
     }
 
 
@@ -935,17 +935,17 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
         unsigned int i;
         //code for plus and minus
         for (i = 0; i < nVertPerPatch; i++)
-            V[permutations[i].second].q = sigma * randomAreaList[i];
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
         for (; i < (number_of_vertices - nVertPerPatch); i++)
             V[permutations[i].second].q = 0;
         for (; i < number_of_vertices; i++)
-            V[permutations[i].second].q = -1.0 * sigma * randomAreaList[i];
+            V[permutations[i].second].q = -1.0 * sigma * randomAreaList[i] * radius * radius;
     }
 
     if (chargeFlag == 'p' && functionFlag == 'y') {             // Yinyang shape formation
         unsigned int i;
         for (i = 0; i < number_of_vertices / 2; i++)
-            V[permutations[i].second].q = sigma * randomAreaList[i];
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
         for (; i < number_of_vertices; i++)
             V[permutations[i].second].q = 0;
 
@@ -954,7 +954,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
                 V[permutations[i].second].q = 0;
             }
             if (V[permutations[i].second].posvec.z >= 0 && (V[permutations[i].second].posvec.x + 0.5) * (V[permutations[i].second].posvec.x + 0.5) + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= 0.25) {
-                V[permutations[i].second].q = sigma * randomAreaList[i];
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
         }
     }
@@ -963,7 +963,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
         unsigned int i;
         for (i = 0; i < number_of_vertices; i++) {
             if ((V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius)) {
-                V[permutations[i].second].q = sigma * randomAreaList[i];
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
                 V[permutations[i].second].q = 0;
@@ -975,7 +975,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
         unsigned int i;
         for (i = 0; i < number_of_vertices; i++) {
             if ((V[permutations[i].second].posvec.x - 0.707) * (V[permutations[i].second].posvec.x - 0.707) + (V[permutations[i].second].posvec.y - 0.707) * (V[permutations[i].second].posvec.y - 0.707) <= 0.01 || (V[permutations[i].second].posvec.x - 0.707) * (V[permutations[i].second].posvec.x - 0.707) + (V[permutations[i].second].posvec.y + 0.707) * (V[permutations[i].second].posvec.y + 0.707) <= 0.01 || (V[permutations[i].second].posvec.x + 0.707) * (V[permutations[i].second].posvec.x + 0.707) + (V[permutations[i].second].posvec.y - 0.707) * (V[permutations[i].second].posvec.y - 0.707) <= 0.01 || (V[permutations[i].second].posvec.x + 0.707) * (V[permutations[i].second].posvec.x + 0.707) + (V[permutations[i].second].posvec.y + 0.707) * (V[permutations[i].second].posvec.y + 0.707) <= 0.01) {
-                V[permutations[i].second].q = sigma * randomAreaList[i];
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
                 V[permutations[i].second].q = 0;
