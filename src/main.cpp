@@ -135,7 +135,7 @@ int main(int argc, const char *argv[]) {
                  // Physical Parameters for patterned (Janus, Striped, Polyhedral) particles:
             ("functionFlag,H", value<char>(&functionFlag)->default_value('s'),
              "specification of function, available options: -y, yinyang; -C, caps; -s, stripes; -o, octahedron; -c, cube.")
-            ("chargeFlag,h", value<char>(&chargeFlag)->default_value('p'),
+            ("chargeFlag,K", value<char>(&chargeFlag)->default_value('p'),
              "charge types involved, available options: -p, postive only; -d, both postive and negative.")
             ("numPatches,N", value<int>(&numPatches)->default_value(1),
              "The number of distinct charge patches (of tunable size if N = 2).")
