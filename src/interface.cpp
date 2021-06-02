@@ -876,7 +876,7 @@ void INTERFACE::assign_random_q_values(double q_strength, double alpha, int num_
 	}*/
 }
 
-void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int num_divisions, double fracChargedPatch, char randomFlag, char functionFlag) {
+void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int num_divisions, double fracChargedPatch, char randomFlag, char functionFlag, char chargeFlag) {
     vector<pair<double, int> > permutations;
     for (unsigned int i = 0; i < number_of_vertices; i++)
         permutations.push_back(pair<double, int>(V[i].posvec.z, i));
@@ -892,26 +892,77 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
         randomAreaList.push_back(V[i].itsarea); // Create the to-be-randomized vertex area list:
     }
 
+    // Randomize the vertex area list (for normalization of all methods):
+    if (randomFlag == 'y') {
+        srand(123456);
+        random_shuffle(randomAreaList.begin(), randomAreaList.end());
+    }
 
     unsigned int nVertPerPatch = (fracChargedPatch)*V.size();
     double side_charges = sigma * (4 * pi * radius * radius) * fracChargedPatch;
     double patch_radius = pow(fracChargedPatch / 2.0, 0.5);
 
-    if (num_divisions == 2) {           //  two patch Janus, specifiable fractional coverage
+    if (chargeFlag == 'p' && functionFlag == 's') {     // Stripes with postive charges only
+        if (num_divisions == 1) {                    // If only one patch: homogeneous charge pattern
+            unsigned int i;
+            for (i = 0; i < number_of_vertices; i++)
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+        }
+        if (num_divisions == 2) {                //  two patch Janus, specifiable fractional coverage
+            unsigned int i;
+            for (i = 0; i < nVertPerPatch; i++)
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+            for (; i < number_of_vertices; i++)
+                V[permutations[i].second].q = 0;
+        }
+    }
+
+
+
+    if (chargeFlag == 'p' && functionFlag == 'C') {           // Caps with positive charges only.
         unsigned int i;
-        //code for plus and minus
         for (i = 0; i < nVertPerPatch; i++)
-            V[permutations[i].second].q = sigma * randomAreaList[i];
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
         for (; i < (number_of_vertices - nVertPerPatch); i++)
             V[permutations[i].second].q = 0;
         for (; i < number_of_vertices; i++)
-            V[permutations[i].second].q = -1.0 * sigma * randomAreaList[i];
-            //V[permutations[i].second].q = 0;
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
     }
 
-    if (functionFlag == 'c') {
-        for (unsigned int i = 0; i < number_of_vertices; i++) {
-            if ((V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y <= patch_radius*patch_radius) || (V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius)) {
+
+
+    if (chargeFlag == 'd' && functionFlag == 'C') {           // Caps with positive and negative charges.
+        unsigned int i;
+        //code for plus and minus
+        for (i = 0; i < nVertPerPatch; i++)
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+        for (; i < (number_of_vertices - nVertPerPatch); i++)
+            V[permutations[i].second].q = 0;
+        for (; i < number_of_vertices; i++)
+            V[permutations[i].second].q = -1.0 * sigma * randomAreaList[i] * radius * radius;
+    }
+
+    if (chargeFlag == 'p' && functionFlag == 'y') {             // Yinyang shape formation
+        unsigned int i;
+        for (i = 0; i < number_of_vertices / 2; i++)
+            V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+        for (; i < number_of_vertices; i++)
+            V[permutations[i].second].q = 0;
+
+        for (i = 0; i < number_of_vertices; i++) {
+            if (V[permutations[i].second].posvec.z <= 0 && (V[permutations[i].second].posvec.x - 0.5) * (V[permutations[i].second].posvec.x - 0.5) + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= 0.25) {
+                V[permutations[i].second].q = 0;
+            }
+            if (V[permutations[i].second].posvec.z >= 0 && (V[permutations[i].second].posvec.x + 0.5) * (V[permutations[i].second].posvec.x + 0.5) + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= 0.25) {
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius
+            }
+        }
+    }
+
+    if (chargeFlag == 'p' && functionFlag == 'o') {         // Octahedron formation, 6 patches
+        unsigned int i;
+        for (i = 0; i < number_of_vertices; i++) {
+            if ((V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius)) {
                 V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
@@ -919,41 +970,64 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
             }
         }
     }
-    else {
-        //  Scale the vertices' charges to achieve the target net charge exactly:
-        if (sigma == 0) {
-            for (unsigned int i = 0; i < V.size(); i++) {
-                V[i].q = 0;
+
+    if (chargeFlag == 'p' && functionFlag == 'c') {         // Cube formation, 8 patches
+        unsigned int i;
+        for (i = 0; i < number_of_vertices; i++) {
+            if ((V[permutations[i].second].posvec.x - 0.707) * (V[permutations[i].second].posvec.x - 0.707) + (V[permutations[i].second].posvec.y - 0.707) * (V[permutations[i].second].posvec.y - 0.707) <= 0.01 || (V[permutations[i].second].posvec.x - 0.707) * (V[permutations[i].second].posvec.x - 0.707) + (V[permutations[i].second].posvec.y + 0.707) * (V[permutations[i].second].posvec.y + 0.707) <= 0.01 || (V[permutations[i].second].posvec.x + 0.707) * (V[permutations[i].second].posvec.x + 0.707) + (V[permutations[i].second].posvec.y - 0.707) * (V[permutations[i].second].posvec.y - 0.707) <= 0.01 || (V[permutations[i].second].posvec.x + 0.707) * (V[permutations[i].second].posvec.x + 0.707) + (V[permutations[i].second].posvec.y + 0.707) * (V[permutations[i].second].posvec.y + 0.707) <= 0.01) {
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+            }
+            else {
+                V[permutations[i].second].q = 0;
             }
         }
-        else {
-            //  Assess total actual charge on the membrane (which may be less than the desired amount due to shuffling):
+    }
+
+
+    //  Scale the vertices' charges to achieve the target net charge exactly:
+    if (sigma == 0) {
+        for (unsigned int i = 0; i < V.size(); i++) {
+            V[i].q = 0;
+        }
+    }
+    else {
+        if (chargeFlag == 'd'){
             double q_positive_actual = 0.;
             double q_negative_actual = 0.;
             for (unsigned int i = 0; i < nVertPerPatch; i++) {
                 q_positive_actual += V[permutations[i].second].q;
             }
-
             for (unsigned int i = number_of_vertices - nVertPerPatch; i < number_of_vertices; i++) {
                 q_negative_actual += V[permutations[i].second].q;
             }
-
-
-            //  Assess the target total charge, to scale charged vertices by to achieve it:
             double q_target;
             q_target = round(side_charges); // Round ensures electroneutrality with counterions.
-
-        //  Scale the vertices' charges to achieve the target net charge exactly:
+            cout << "positive total charges: " << q_target << endl;
+            cout << "negative total charges: " << -1.0 * q_target << endl;
+            //  Scale the vertices' charges to achieve the target net charge exactly:
             for (unsigned int i = 0; i < nVertPerPatch; i++) {
                 V[permutations[i].second].q = V[permutations[i].second].q * (q_target / q_positive_actual);
             }
-
             for (unsigned int i = number_of_vertices - nVertPerPatch; i < number_of_vertices; i++) {
                 V[permutations[i].second].q = V[permutations[i].second].q * (-1.0 * q_target / q_negative_actual);
             }
         }
+        else {
+            double q_positive_actual = 0.;
+            for (unsigned int i = 0; i < number_of_vertices; i++) {
+                q_positive_actual += V[permutations[i].second].q;
+            }
+            double q_target;
+            q_target = round(q_positive_actual); // Round ensures electroneutrality with counterions.
+            cout << "positive total charges: " << q_target << endl;
+            cout << "negative total charges: " << 0.0 << endl;
+            for (unsigned int i = 0; i < number_of_vertices; i++) {
+                V[permutations[i].second].q = V[permutations[i].second].q * (q_target / q_positive_actual);
+            }
+
+        }
+
     }
- 
 }
 
 

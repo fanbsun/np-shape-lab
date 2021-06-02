@@ -93,7 +93,9 @@ int main(int argc, const char *argv[]) {
     double unit_radius_sphere, youngsModulus, q_strength, alpha, conc_out, z_out, sigma; // radius (in nm), net charge (if all charged), fractional q-occupancy, salt conc (MOLAR), salt valency, charge density
     int numPatches;
     double fracChargedPatch;
-    char randomFlag, offFlag, geomConstraint, bucklingFlag, constraintForm, counterionFlag, functionFlag;  // functionFlag indicates different pattern initializations, -y for yingyang pattern, -c for cube formation.
+    char randomFlag, offFlag, geomConstraint, bucklingFlag, constraintForm, counterionFlag
+    char functionFlag;                 // functionFlag indicates different pattern initializations, -y for yinyang pattern, -c for cube formation, -C for caps shape, -s for stripes, -o for octahedron.
+    char chargeFlag;                   // types of the charges involved. -p for positve charges only, -d for both positive and negative charges.
     string externalPattern;
 
     // Counterion Initializations:
@@ -131,8 +133,10 @@ int main(int argc, const char *argv[]) {
             ("bucklingFlag,B", value<char>(&bucklingFlag)->default_value('n'),
              "Specification of stretching form, if spontaneous buckling should occur.")
                  // Physical Parameters for patterned (Janus, Striped, Polyhedral) particles:
-            ("functionFlag,H", value<char>(&functionFlag)->default_value('n'),
-             "specification of function, 'y' for yinyang function.")
+            ("functionFlag,H", value<char>(&functionFlag)->default_value('s'),
+             "specification of function, available options: -y, yinyang; -C, caps; -s, stripes; -o, octahedron; -c, cube.")
+            ("chargeFlag,h", value<char>(&chargeFlag)->default_value('p'),
+             "charge types involved, available options: -p, postive only; -d, both postive and negative.")
             ("numPatches,N", value<int>(&numPatches)->default_value(1),
              "The number of distinct charge patches (of tunable size if N = 2).")
             ("fracChargePatch,p", value<double>(&fracChargedPatch)->default_value(0.5),
@@ -245,7 +249,7 @@ int main(int argc, const char *argv[]) {
     if (disc1 != 0 || disc2 != 0) {
         if (externalPattern == "None") 
 			  //boundary.assign_random_q_values(q_strength, alpha, numPatches, fracChargedPatch, randomFlag, functionFlag);
-              boundary.assign_random_plusminus_values(sigma, unit_radius_sphere, numPatches, fracChargedPatch, randomFlag, functionFlag);
+              boundary.assign_random_plusminus_values(sigma, unit_radius_sphere, numPatches, fracChargedPatch, randomFlag, functionFlag, chargeFlag);
         else 
 			  boundary.assign_external_q_values(q_strength, externalPattern);
 	 }
