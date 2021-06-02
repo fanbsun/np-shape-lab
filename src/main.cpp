@@ -93,7 +93,7 @@ int main(int argc, const char *argv[]) {
     double unit_radius_sphere, youngsModulus, q_strength, alpha, conc_out, z_out, sigma; // radius (in nm), net charge (if all charged), fractional q-occupancy, salt conc (MOLAR), salt valency, charge density
     int numPatches;
     double fracChargedPatch;
-    char randomFlag, offFlag, geomConstraint, bucklingFlag, constraintForm, counterionFlag
+    char randomFlag, offFlag, geomConstraint, bucklingFlag, constraintForm, counterionFlag;
     char functionFlag;                 // functionFlag indicates different pattern initializations, -y for yinyang pattern, -c for cube formation, -C for caps shape, -s for stripes, -o for octahedron.
     char chargeFlag;                   // types of the charges involved. -p for positve charges only, -d for both positive and negative charges.
     string externalPattern;
