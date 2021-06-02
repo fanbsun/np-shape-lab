@@ -954,7 +954,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
                 V[permutations[i].second].q = 0;
             }
             if (V[permutations[i].second].posvec.z >= 0 && (V[permutations[i].second].posvec.x + 0.5) * (V[permutations[i].second].posvec.x + 0.5) + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= 0.25) {
-                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
         }
     }
