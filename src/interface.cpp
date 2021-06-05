@@ -285,6 +285,8 @@ void INTERFACE::reassign_charges() {
     for (unsigned int i = 0; i < number_of_faces; i++) {
         Dual[i].q *= (q_original / (q_original + q_dual));
     }
+    cout << "positive total charges(include dual): " << q_original + q_dual << endl;
+    cout << "negative total charges(include dual): " << 0 << endl;
 }
 
 void INTERFACE::reassign_pm_charges() {
@@ -974,7 +976,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
     if (chargeFlag == 'p' && functionFlag == 'c') {         // Cube formation, 8 patches
         unsigned int i;
         for (i = 0; i < number_of_vertices; i++) {
-            if ((V[permutations[i].second].posvec.x - 0.707) * (V[permutations[i].second].posvec.x - 0.707) + (V[permutations[i].second].posvec.y - 0.707) * (V[permutations[i].second].posvec.y - 0.707) <= 0.01 || (V[permutations[i].second].posvec.x - 0.707) * (V[permutations[i].second].posvec.x - 0.707) + (V[permutations[i].second].posvec.y + 0.707) * (V[permutations[i].second].posvec.y + 0.707) <= 0.01 || (V[permutations[i].second].posvec.x + 0.707) * (V[permutations[i].second].posvec.x + 0.707) + (V[permutations[i].second].posvec.y - 0.707) * (V[permutations[i].second].posvec.y - 0.707) <= 0.01 || (V[permutations[i].second].posvec.x + 0.707) * (V[permutations[i].second].posvec.x + 0.707) + (V[permutations[i].second].posvec.y + 0.707) * (V[permutations[i].second].posvec.y + 0.707) <= 0.01) {
+            if ((V[permutations[i].second].posvec.x - 0.707 / 2.0) * (V[permutations[i].second].posvec.x - 0.707 / 2.0) + (V[permutations[i].second].posvec.y - 0.707 / 2.0) * (V[permutations[i].second].posvec.y - 0.707 / 2.0) <= 0.04 || (V[permutations[i].second].posvec.x - 0.707 / 2.0) * (V[permutations[i].second].posvec.x - 0.707 / 2.0) + (V[permutations[i].second].posvec.y + 0.707 / 2.0) * (V[permutations[i].second].posvec.y + 0.707 / 2.0) <= 0.04 || (V[permutations[i].second].posvec.x + 0.707 / 2.0) * (V[permutations[i].second].posvec.x + 0.707 / 2.0) + (V[permutations[i].second].posvec.y - 0.707 / 2.0) * (V[permutations[i].second].posvec.y - 0.707 / 2.0) <= 0.04 || (V[permutations[i].second].posvec.x + 0.707 / 2.0) * (V[permutations[i].second].posvec.x + 0.707 / 2.0) + (V[permutations[i].second].posvec.y + 0.707 / 2.0) * (V[permutations[i].second].posvec.y + 0.707 / 2.0) <= 0.04) {
                 V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
