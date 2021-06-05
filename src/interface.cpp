@@ -879,10 +879,14 @@ void INTERFACE::assign_random_q_values(double q_strength, double alpha, int num_
 }
 
 void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int num_divisions, double fracChargedPatch, char randomFlag, char functionFlag, char chargeFlag) {
-    vector<pair<double, int> > permutations;
-    for (unsigned int i = 0; i < number_of_vertices; i++)
+    vector<pair<double, int> > permutations;              //sort by axis z
+    vector<pair<double, int> > permutations_x;           //sort by axis x
+    for (unsigned int i = 0; i < number_of_vertices; i++) {
         permutations.push_back(pair<double, int>(V[i].posvec.z, i));
+        permutations_x.push_back(pair<double, int>(V[i].posvec.x, i));
+    }
     sort(permutations.begin(), permutations.end());
+    sort(permutations_x.begin(), permutations_x.end());
     //assert(num_divisions == 2); // Verify the prescribed number of divisions is supported.
     if (number_of_vertices % num_divisions != 0)
         if (world.rank() == 0)
@@ -976,11 +980,17 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
     if (chargeFlag == 'p' && functionFlag == 'c') {         // Cube formation, 8 patches
         unsigned int i;
         for (i = 0; i < number_of_vertices; i++) {
-            if ((V[permutations[i].second].posvec.x - 0.707 / 2.0) * (V[permutations[i].second].posvec.x - 0.707 / 2.0) + (V[permutations[i].second].posvec.y - 0.707 / 2.0) * (V[permutations[i].second].posvec.y - 0.707 / 2.0) <= 0.04 || (V[permutations[i].second].posvec.x - 0.707 / 2.0) * (V[permutations[i].second].posvec.x - 0.707 / 2.0) + (V[permutations[i].second].posvec.y + 0.707 / 2.0) * (V[permutations[i].second].posvec.y + 0.707 / 2.0) <= 0.04 || (V[permutations[i].second].posvec.x + 0.707 / 2.0) * (V[permutations[i].second].posvec.x + 0.707 / 2.0) + (V[permutations[i].second].posvec.y - 0.707 / 2.0) * (V[permutations[i].second].posvec.y - 0.707 / 2.0) <= 0.04 || (V[permutations[i].second].posvec.x + 0.707 / 2.0) * (V[permutations[i].second].posvec.x + 0.707 / 2.0) + (V[permutations[i].second].posvec.y + 0.707 / 2.0) * (V[permutations[i].second].posvec.y + 0.707 / 2.0) <= 0.04) {
+            if (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + (V[permutations[i].second].posvec.y - 1.0 / 2.0) * (V[permutations[i].second].posvec.y - 1.0 / 2.0) <= 0.1 || V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + (V[permutations[i].second].posvec.y + 1.0 / 2.0) * (V[permutations[i].second].posvec.y + 1.0 / 2.0) <= 0.1) {
                 V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
                 V[permutations[i].second].q = 0;
+            }
+        }
+
+        for (i = 0; i < number_of_vertices; i++) {
+            if (V[permutations_x[i].second].posvec.z * V[permutations_x[i].second].posvec.z + (V[permutations_x[i].second].posvec.y - 1.0 / 2.0) * (V[permutations_x[i].second].posvec.y - 1.0 / 2.0) <= 0.1 || V[permutations_x[i].second].posvec.z * V[permutations_x[i].second].posvec.z + (V[permutations_x[i].second].posvec.y + 1.0 / 2.0) * (V[permutations_x[i].second].posvec.y + 1.0 / 2.0) <= 0.1) {
+                V[permutations_x[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
         }
     }
