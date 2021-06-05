@@ -906,7 +906,8 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
 
     unsigned int nVertPerPatch = (fracChargedPatch)*V.size();
     double side_charges = sigma * (4 * pi * radius * radius) * fracChargedPatch;
-    double patch_radius = pow(fracChargedPatch / 2.0, 0.5);
+    double patch_radius_octa = pow(2.0 * fracChargedPatch / 3.0, 0.5);
+    double patch_radius_cube = pow(fracChargedPatch / 2.0, 0.5);
 
     if (chargeFlag == 'p' && functionFlag == 's') {     // Stripes with postive charges only
         if (num_divisions == 1) {                    // If only one patch: homogeneous charge pattern
@@ -968,7 +969,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
     if (chargeFlag == 'p' && functionFlag == 'o') {         // Octahedron formation, 6 patches
         unsigned int i;
         for (i = 0; i < number_of_vertices; i++) {
-            if ((V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius) || (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius * patch_radius)) {
+            if ((V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y <= patch_radius_octa * patch_radius_octa) || (V[permutations[i].second].posvec.y * V[permutations[i].second].posvec.y + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius_octa * patch_radius_octa) || (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + V[permutations[i].second].posvec.z * V[permutations[i].second].posvec.z <= patch_radius_octa * patch_radius_octa)) {
                 V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
@@ -980,7 +981,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
     if (chargeFlag == 'p' && functionFlag == 'c') {         // Cube formation, 8 patches
         unsigned int i;
         for (i = 0; i < number_of_vertices; i++) {
-            if (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + (V[permutations[i].second].posvec.y - 1.0 / 2.0) * (V[permutations[i].second].posvec.y - 1.0 / 2.0) <= 0.1 || V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + (V[permutations[i].second].posvec.y + 1.0 / 2.0) * (V[permutations[i].second].posvec.y + 1.0 / 2.0) <= 0.1) {
+            if (V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + (V[permutations[i].second].posvec.y - 1.0 / 2.0) * (V[permutations[i].second].posvec.y - 1.0 / 2.0) <= patch_radius_cube * patch_radius_cube || V[permutations[i].second].posvec.x * V[permutations[i].second].posvec.x + (V[permutations[i].second].posvec.y + 1.0 / 2.0) * (V[permutations[i].second].posvec.y + 1.0 / 2.0) <= patch_radius_cube * patch_radius_cube) {
                 V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
             else {
@@ -989,7 +990,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
         }
 
         for (i = 0; i < number_of_vertices; i++) {
-            if (V[permutations_x[i].second].posvec.z * V[permutations_x[i].second].posvec.z + (V[permutations_x[i].second].posvec.y - 1.0 / 2.0) * (V[permutations_x[i].second].posvec.y - 1.0 / 2.0) <= 0.1 || V[permutations_x[i].second].posvec.z * V[permutations_x[i].second].posvec.z + (V[permutations_x[i].second].posvec.y + 1.0 / 2.0) * (V[permutations_x[i].second].posvec.y + 1.0 / 2.0) <= 0.1) {
+            if (V[permutations_x[i].second].posvec.z * V[permutations_x[i].second].posvec.z + (V[permutations_x[i].second].posvec.y - 1.0 / 2.0) * (V[permutations_x[i].second].posvec.y - 1.0 / 2.0) <= patch_radius_cube * patch_radius_cube || V[permutations_x[i].second].posvec.z * V[permutations_x[i].second].posvec.z + (V[permutations_x[i].second].posvec.y + 1.0 / 2.0) * (V[permutations_x[i].second].posvec.y + 1.0 / 2.0) <= patch_radius_cube * patch_radius_cube) {
                 V[permutations_x[i].second].q = sigma * randomAreaList[i] * radius * radius;
             }
         }
