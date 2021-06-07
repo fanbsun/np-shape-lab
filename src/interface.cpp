@@ -906,7 +906,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
 
     unsigned int nVertPerPatch = (fracChargedPatch)*V.size();
     double side_charges = sigma * (4 * pi * radius * radius) * fracChargedPatch;
-    double patch_radius_octa = pow(2.0 * fracChargedPatch / 3.0, 0.5);
+    double patch_radius_octa = sqrt(2.0 * fracChargedPatch / 3.0 - fracChargedPatch * fracChargedPatch / 9.0);
     double patch_radius_cube = pow(fracChargedPatch / 2.0, 0.5);
 
     if (chargeFlag == 'p' && functionFlag == 's') {     // Stripes with postive charges only
