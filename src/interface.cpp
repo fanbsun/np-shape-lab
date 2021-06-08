@@ -922,6 +922,16 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
             for (; i < number_of_vertices; i++)
                 V[permutations[i].second].q = 0;
         }
+        if (num_divisions >= 3) {               // n patch striped, approximately equal areas each about z-axis
+            unsigned int i, j;
+            for (i = 0; i < number_of_vertices; i++)     //initialize a netural mesh
+                V[permutations[i].second].q = 0
+            for (j = 0; j < num_divisions; j = j + 2){
+                for (i = int(ceil(j * number_of_vertices / num_divisions)); i < (j+1) * number_of_vertices / num_divisions; i++) {
+                    V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+                }
+            }
+        }
     }
 
 
