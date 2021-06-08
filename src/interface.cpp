@@ -986,6 +986,11 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
                 V[permutations[i].second].q = 0;
             }
         }
+
+        if (fracChargedPatch == 1.0) {
+            for (i = 0; i < number_of_vertices; i++)
+                V[permutations[i].second].q = sigma * randomAreaList[i] * radius * radius;
+        }
     }
 
     if (chargeFlag == 'p' && functionFlag == 'c') {         // Cube formation, 8 patches
