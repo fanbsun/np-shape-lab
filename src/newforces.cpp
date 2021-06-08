@@ -260,9 +260,15 @@ void force_calculation(INTERFACE &boundary, vector<PARTICLE> &counterions, const
         boundary.V[i].stretching_forces(&boundary, bucklingFlag);
     // Surface & volume tension forces (2017.09.17, 2019.08.16 NB added):
     for (i = 0; i < boundary.V.size(); i++) { // Recalculation of negated gradients already handled above.
-        boundary.V[i].tension_forces(&boundary);
         boundary.V[i].volume_tension_forces(&boundary);
     }
+    
+    if (boundary.sigma_a != 0)
+	 {
+		 for (i = 0; i < boundary.V.size(); i++) { // Recalculation of negated gradients already handled above.
+        boundary.V[i].tension_forces(&boundary);
+		}
+	 }
 
     // Collect MPI forVec computations via broadcasting using (all_gather = gather + broadcast):
     if (world.size() > 1) {

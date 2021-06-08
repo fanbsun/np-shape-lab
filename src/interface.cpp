@@ -1053,9 +1053,7 @@ void INTERFACE::assign_random_plusminus_values(double sigma, double radius, int 
     }
 }
 
-
-
-
+/*
 //  NB added function to import charge values/patterns from a file:
 void INTERFACE::assign_external_q_values(double q_strength, string externalPattern) {
     // Read data from a single specified file:
@@ -1102,6 +1100,7 @@ void INTERFACE::assign_external_q_values(double q_strength, string externalPatte
         }
     }
 }
+*/
 
 //  Output information on the initial state of the NP mesh:
 void INTERFACE::output_configuration() {

@@ -90,7 +90,7 @@ int main(int argc, const char *argv[]) {
     unsigned int disc1, disc2;
     double lambda_a, lambda_v;          // lambdas measuring strength of area & volume constraints  (unused)
 
-    double unit_radius_sphere, youngsModulus, q_strength, alpha, conc_out, z_out, sigma; // radius (in nm), net charge (if all charged), fractional q-occupancy, salt conc (MOLAR), salt valency, charge density
+    double unit_radius_sphere, youngsModulus, alpha, conc_out, z_out, sigma; // radius (in nm), net charge (if all charged), fractional q-occupancy, salt conc (MOLAR), salt valency, charge density
     int numPatches;
     double fracChargedPatch;
     char randomFlag, offFlag, geomConstraint, bucklingFlag, constraintForm, counterionFlag;
@@ -114,8 +114,6 @@ int main(int argc, const char *argv[]) {
                  // Physical Parameters:
             ("unitRadius,R", value<double>(&unit_radius_sphere)->default_value(10),
              "Radius of the initial sphere & simulation unit of length (in nanometers).")
-            ("netCharge,q", value<double>(&q_strength)->default_value(600),
-             "Net NP charge, if fully occupied (elementary charges).")
             ("ChargeDensity,A", value<double>(&sigma)->default_value(0.1),
              "NP charge Density, Default to be 0.1")
             ("saltConc,c", value<double>(&conc_out)->default_value(0.005),
@@ -135,7 +133,7 @@ int main(int argc, const char *argv[]) {
                  // Physical Parameters for patterned (Janus, Striped, Polyhedral) particles:
             ("functionFlag,H", value<char>(&functionFlag)->default_value('s'),
              "specification of function, available options: 'y', yinyang; 'C', caps; 's', stripes; 'o', octahedron; 'c', cube.")
-            ("chargeFlag,K", value<char>(&chargeFlag)->default_value('p'),
+            ("chargeFlag,q", value<char>(&chargeFlag)->default_value('p'),
              "charge types involved, available options: 'p', postive only; 'd', both postive and negative.")
             ("numPatches,N", value<int>(&numPatches)->default_value(1),
              "The number of distinct charge patches (of tunable size if N = 2).")
@@ -248,10 +246,10 @@ int main(int argc, const char *argv[]) {
     boundary.discretize(disc1, disc2);            // discretize the interface
     if (disc1 != 0 || disc2 != 0) {
         if (externalPattern == "None") 
-			  //boundary.assign_random_q_values(q_strength, alpha, numPatches, fracChargedPatch, randomFlag, functionFlag);
               boundary.assign_random_plusminus_values(sigma, unit_radius_sphere, numPatches, fracChargedPatch, randomFlag, functionFlag, chargeFlag);
-        else 
-			  boundary.assign_external_q_values(q_strength, externalPattern);
+		  else 
+			  ;
+			  //boundary.assign_external_q_values(q_strength, externalPattern); // q_strength removed entirely
 	 }
 
     //  Assess total actual charge on the membrane for record & to place the correct number of counterions:
@@ -347,8 +345,7 @@ int main(int argc, const char *argv[]) {
         cout << "Rigid geometric constraint: " << geomConstraint << endl;
 
         cout << "\n===================\nElectrostatics\n===================\n";
-        cout << "Total charge on membrane (if homogeneously charged): " << q_strength << endl;
-        cout << "Final actual charge on membrane: " << q_actual << endl;
+        cout << "Surface charge on the NP: " << q_actual << endl;
         cout << "Number of simulated counterions: " << counterions.size() << endl;
         cout << "Fractional charge occupancy (alpha): " << alpha << endl;
         cout << "The number of patches is: " << numPatches << endl;
@@ -396,7 +393,6 @@ int main(int argc, const char *argv[]) {
         list_out << "Rigid geometric constraint: " << geomConstraint << endl;
 
         list_out << "\n===================\nElectrostatics\n===================\n";
-        list_out << "Total charge on membrane: " << q_strength << endl;
         list_out << "Final actual charge on membrane: " << q_actual << endl;
         list_out << "Number of simulated counterions: " << counterions.size() << endl;
         list_out << "Fractional charge occupancy (alpha): " << alpha << endl;
@@ -496,7 +492,6 @@ int main(int argc, const char *argv[]) {
     }
     cout << "Finish assigning duals and recomputing all the charges" << endl;
 
-    //boundary.put_counterions(q_strength, unit_radius_sphere, counterion_diameter, box_halflength_new, counterions, counterion_valency, counterion_flag);
     boundary.put_counterions(actual_side_q_charge*2, unit_radius_sphere, counterion_diameter, box_halflength_new, counterions, counterion_valency, counterion_flag);
     cout << "Finish putting ions" << endl;
     create_input_coordinate(boundary.V, boundary.Dual, counterions, box_halflength_new, qLJ, 0.6/unit_radius_sphere);
