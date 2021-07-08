@@ -1250,7 +1250,7 @@ void INTERFACE::compute_energy(int num, vector<PARTICLE> &counterions, const dou
     // Initialize, compute, & output the net bending energy (mesh-only):
     double benergy = 0;
     for (unsigned int i = 0; i < E.size(); i++) {
-        benergy += bkappa * (1 - E[i].itsS
+        benergy += bkappa * (E[i].itsS
                                  / (4 * E[i].itsF[0]->itsarea * E[i].itsF[1]->itsarea));
     }
     penergy += benergy;
